@@ -1,5 +1,5 @@
 # Problem Set 4A
-# Name: <your name here>
+# Name: Lewis
 # Collaborators:
 # Time Spent: x:xx
 import itertools
@@ -48,5 +48,10 @@ if __name__ == '__main__':
 #    to be three characters or fewer as you will have n! permutations for a 
 #    sequence of length n)
 
-    pass #delete this line and replace with your code here
+    print('input: "a"')
+    print('Actual Output:',get_permutations('a'))
+    print('input: "ab"')
+    print('Actual Output:',get_permutations('ab'))
+    print('input: "abc"')
+    print('Actual Output:',get_permutations('abc'))
 
