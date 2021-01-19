@@ -258,11 +258,11 @@ ciphertext = CiphertextMessage('jgnnq')
 print('Expected Output:', (24, 'hello'))
 print('Actual Output:', ciphertext.decrypt_message())
 
-    #TODO: WRITE YOUR TEST CASES HERE
+#TODO: WRITE YOUR TEST CASES HERE
 
 
 
-    #TODO: best shift value and unencrypted story 
+#TODO: best shift value and unencrypted story 
 story = get_story_string()
 cipherstory = CiphertextMessage(story)
 print(cipherstory.decrypt_message())
