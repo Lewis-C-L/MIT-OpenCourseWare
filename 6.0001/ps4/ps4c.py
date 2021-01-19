@@ -5,6 +5,8 @@
 
 import string
 from ps4a import get_permutations
+import itertools
+flatten = itertools.chain.from_iterable
 
 ### HELPER CODE ###
 def load_words(file_name):
@@ -51,6 +53,39 @@ def is_word(word_list, word):
 
 ### END HELPER CODE ###
 
+### Functions from part A ###
+def get_permutations(sequence):
+    '''
+    Enumerate all permutations of a given string
+
+    sequence (string): an arbitrary string to permute. Assume that it is a
+    non-empty string.  
+
+    You MUST use recursion for this part. Non-recursive solutions will not be
+    accepted.
+
+    Returns: a list of all permutations of sequence
+
+    Example:
+    >>> get_permutations('abc')
+    ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']
+
+    Note: depending on your implementation, you may return the permutations in
+    a different order than what is listed here.
+    '''
+
+    letters = [x for x in sequence]
+    pos = 1
+    new_sequences = [sequence[0]]
+    while pos<len(letters):
+        l = [[y[:x]+letters[pos]+y[x:] for x in range(pos+1)] for y in new_sequences]
+        new_sequences = list(flatten(l))
+        pos+=1
+    return new_sequences
+
+### END OF FUCNTIONS FROM PART A ###
+
+
 WORDLIST_FILENAME = 'words.txt'
 
 # you may find these constants helpful
@@ -70,7 +105,9 @@ class SubMessage(object):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        #pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = load_words('words.txt')
     
     def get_message_text(self):
         '''
@@ -78,7 +115,8 @@ class SubMessage(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        #pass #delete this line and replace with your code here
+        return self.message_text
 
     def get_valid_words(self):
         '''
@@ -87,7 +125,8 @@ class SubMessage(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        #pass #delete this line and replace with your code here
+        return self.valid_words.copy()
                 
     def build_transpose_dict(self, vowels_permutation):
         '''
@@ -109,7 +148,10 @@ class SubMessage(object):
                  another letter (string). 
         '''
         
-        pass #delete this line and replace with your code here
+        #pass #delete this line and replace with your code here
+        l_mapping = dict([(x,y) for x,y in zip('aeiou',vowels_permutation.lower())])
+        u_mapping = dict([(x,y) for x,y in zip('AEIOU',vowels_permutation.upper())])
+        return {**l_mapping,**u_mapping}
     
     def apply_transpose(self, transpose_dict):
         '''
@@ -119,7 +161,11 @@ class SubMessage(object):
         on the dictionary
         '''
         
-        pass #delete this line and replace with your code here
+        #pass #delete this line and replace with your code here
+        sub = [transpose_dict.get(x,x) for x in self.message_text]
+        l = ''
+        return l.join(sub)
+
         
 class EncryptedSubMessage(SubMessage):
     def __init__(self, text):
@@ -132,7 +178,9 @@ class EncryptedSubMessage(SubMessage):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        #pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = load_words('words.txt')
 
     def decrypt_message(self):
         '''
@@ -152,8 +200,21 @@ class EncryptedSubMessage(SubMessage):
         
         Hint: use your function from Part 4A
         '''
-        pass #delete this line and replace with your code here
-    
+        #pass #delete this line and replace with your code here
+        vowel_permutations = get_permutations('aeiou')
+        n_perm = len(vowel_permutations)
+        all_dictionaries = [self.build_transpose_dict(x) for x in vowel_permutations]
+        all_substitutions = [self.apply_transpose(x) for x in all_dictionaries]
+        wordlist = self.get_valid_words()
+        #convert messages into a list of words
+        all_substitutions_split = [x.split(" ") for x in all_substitutions]
+        words_found =  [sum([is_word(wordlist,x) for x in all_substitutions_split[y]]) for y in range(n_perm)]
+        max_words_found =  max(words_found)
+        permutation_position = words_found.index(max_words_found)
+        dmessage = all_substitutions[permutation_position]
+        return dmessage
+             
+        
 
 if __name__ == '__main__':
 
