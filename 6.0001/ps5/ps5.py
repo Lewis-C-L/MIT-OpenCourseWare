@@ -53,6 +53,67 @@ def process(url):
 #======================
 
 # Problem 1
+class NewsStory(object):
+    def __init__(self, guid, title, description, link, pubdate):
+        """
+        Initializes a NewsStory object
+                
+               guid (string): Global unique identifier.
+              title (string): The news story's headline.
+        description (string): A paragraph or so summarizing the news story.
+               link (string): A link to a website with the entire story.
+          pubdate (datetime): Date the news was published.
+
+        a NewsStory object has five attributes:
+            self.guid (string, determined by input text)
+            self.title (string, determined by input text)
+            self.desciption (string, determined by input text)
+            self.link (string, determined by input text)
+            self.pubdate (datetime, determined by input)          
+        """
+        self.guid = guid
+        self.title = title
+        self.description = description
+        self.link = link
+        self.pubdate = pubdate
+    def get_guid(self):
+        '''
+        Used to safely access self.guid outside of the class    
+        Returns: self.guid      
+        '''
+        return self.guid
+   
+    def get_title(self):
+        '''
+        Used to safely access self.title outside of the class     
+        Returns: self.title      
+        '''
+        return self.title
+    
+    def get_description(self):
+        '''
+        Used to safely access self.description outside of the class       
+        Returns: self.description     
+        '''
+        return self.description
+
+    def get_link(self):
+        '''
+        Used to safely access self.link outside of the class      
+        Returns: self.link     
+        '''
+        return self.link
+
+    def get_pubdate(self):
+        '''
+        Used to safely access self.pubdate outside of the class       
+        Returns: self.pubdate     
+        '''
+        return self.pubdate
+
+
+
+
 
 # TODO: NewsStory
 
