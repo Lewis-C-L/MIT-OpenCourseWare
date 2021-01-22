@@ -137,12 +137,15 @@ class Trigger(object):
 
 # Problem 2
 # TODO: PhraseTrigger
-class PhaseTrigger(Trigger):
+class PhraseTrigger(Trigger):
     def __init__(self,phrase):
         '''
         
         '''
         self.phrase = phrase
+        
+    def get_phrase(self):
+        return self.phrase
     
     def is_phrase_in (self,text):
         '''
@@ -156,15 +159,36 @@ class PhaseTrigger(Trigger):
         text = re.sub(' '+'{2,}',' ',text)       # convert multiple spaces into single space 
          
         ## is phrase in text##
-        return self.phrase.lower() in text
+        return self.get_phrase.lower() in text
         
         
         
 # Problem 3
 # TODO: TitleTrigger
+class TitleTrigger(PhraseTrigger):
+    '''
+    Return True if phrase is found in story's title. False otherwise
+    '''
+    def __init__(self, phrase):
+        PhraseTrigger.__init__(self, phrase)
+    
+    def evaluate(self, story):
+        return self.is_phrase_in(story.get_title())
+    
+
+            
 
 # Problem 4
 # TODO: DescriptionTrigger
+class DescriptionTrigger(PhraseTrigger):
+    '''
+    Return True if phrase is found in story's description. False otherwise
+    '''
+    def __init__(self, phrase):
+        PhraseTrigger.__init__(self, phrase)
+    
+    def evaluate(self, story):
+        return self.is_phrase_in(story.get_description())
 
 # TIME TRIGGERS
 
@@ -301,10 +325,10 @@ def main_thread(master):
         print(e)
 
 
-if __name__ == '__main__':
-    root = Tk()
-    root.title("Some RSS parser")
-    t = threading.Thread(target=main_thread, args=(root,))
-    t.start()
-    root.mainloop()
+# if __name__ == '__main__':
+#     root = Tk()
+#     root.title("Some RSS parser")
+#     t = threading.Thread(target=main_thread, args=(root,))
+#     t.start()
+#     root.mainloop()
 
