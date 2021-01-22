@@ -12,6 +12,8 @@ from mtTkinter import *
 from datetime import datetime
 import pytz
 
+import re
+
 
 #-----------------------------------------------------------------------
 
@@ -135,7 +137,29 @@ class Trigger(object):
 
 # Problem 2
 # TODO: PhraseTrigger
-
+class PhaseTrigger(Trigger):
+    def __init__(self,phrase):
+        '''
+        
+        '''
+        self.phrase = phrase
+    
+    def is_phrase_in (self,text):
+        '''
+        '''
+        ## convert text into a easy to compare format ##
+        text = text.lower()                      # all lower case     
+        punct = [x for x in string.punctuation]  # punctuations as a list    
+        for ch in punct:                         # remove punctuations from text
+            if ch in text:
+                text = text.replace(ch,'')               
+        text = re.sub(' '+'{2,}',' ',text)       # convert multiple spaces into single space 
+         
+        ## is phrase is text##
+        return self.phrase.lower() in text
+        
+        
+        
 # Problem 3
 # TODO: TitleTrigger
 
