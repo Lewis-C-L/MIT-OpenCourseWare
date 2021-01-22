@@ -155,7 +155,7 @@ class PhaseTrigger(Trigger):
                 text = text.replace(ch,'')               
         text = re.sub(' '+'{2,}',' ',text)       # convert multiple spaces into single space 
          
-        ## is phrase is text##
+        ## is phrase in text##
         return self.phrase.lower() in text
         
         
