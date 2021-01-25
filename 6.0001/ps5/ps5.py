@@ -153,13 +153,15 @@ class PhraseTrigger(Trigger):
         ## convert text into a easy to compare format ##
         text = text.lower()                      # all lower case     
         punct = [x for x in string.punctuation]  # punctuations as a list    
-        for ch in punct:                         # remove punctuations from text
+        for ch in punct:                         # replace punctuations with spaces
             if ch in text:
-                text = text.replace(ch,'')               
+                text = text.replace(ch,' ')               
         text = re.sub(' '+'{2,}',' ',text)       # convert multiple spaces into single space 
          
         ## is phrase in text##
-        return self.get_phrase.lower() in text
+        return self.get_phrase().lower() +' ' in text +' ' 
+        # the added space at the end of phrase removes cases where phrase is contained within another word. eg car and cars
+        # the added space at the end of the text deals with the case that the text ends with the phrase. ie searching for 'car ' but text would be 'car'
         
         
         
@@ -197,21 +199,78 @@ class DescriptionTrigger(PhraseTrigger):
 # Constructor:
 #        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
 #        Convert time from string to a datetime before saving it as an attribute.
-
+class TimeTrigger(Trigger):
+    '''
+    Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
+    Convert time from string to a datetime before saving it as an attribute.
+    '''
+    def __init__(self,datetime_string):
+        self.datetime = datetime.strptime(datetime_string,"%d %b %Y %H:%M:%S").replace(tzinfo=pytz.timezone("EST"))
+        
+    def get_datetime(self):
+        return self.datetime
+    
 # Problem 6
 # TODO: BeforeTrigger and AfterTrigger
+class BeforeTrigger(TimeTrigger):
+    def __init__(self, datetime_string):
+        TimeTrigger.__init__(self,datetime_string)
+   
+    def evaluate(self, story):
+        return self.datetime > story.get_pubdate().replace(tzinfo=pytz.timezone("EST"))
+        
 
+
+class AfterTrigger(TimeTrigger):
+    def __init__(self, datetime_string):
+        TimeTrigger.__init__(self,datetime_string)
+    
+    def evaluate(self, story):
+        return self.datetime < story.get_pubdate().replace(tzinfo=pytz.timezone("EST"))
 
 # COMPOSITE TRIGGERS
 
 # Problem 7
 # TODO: NotTrigger
-
+class NotTrigger(Trigger):
+    def __init__(self,trigger):
+        self.trigger = trigger
+        
+    def get_trigger(self):
+        return self.trigger
+    
+    def evaluate(self, story):
+        return not self.get_trigger().evaluate(story)
 # Problem 8
 # TODO: AndTrigger
+class AndTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+    
+    def get_trigger1(self):
+        return self.trigger1
+    def get_trigger2(self):
+        return self.trigger2
+    
+    def evaluate(self, story):
+        return self.get_trigger1().evaluate(story) and self.get_trigger2().evaluate(story)
 
 # Problem 9
 # TODO: OrTrigger
+
+class OrTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+    
+    def get_trigger1(self):
+        return self.trigger1
+    def get_trigger2(self):
+        return self.trigger2
+    
+    def evaluate(self, story):
+        return self.get_trigger1().evaluate(story) or self.get_trigger2().evaluate(story)
 
 
 #======================
@@ -228,8 +287,9 @@ def filter_stories(stories, triggerlist):
     # TODO: Problem 10
     # This is a placeholder
     # (we're just returning all the stories, with no filtering)
-    return stories
-
+    list1 = [[x.evaluate(y) for x in triggerlist] for y in stories]
+    list2 = map(any,list1)
+    return [x[0] for x in zip(stories,list2) if x[1] == True]
 
 
 #======================
@@ -325,10 +385,10 @@ def main_thread(master):
         print(e)
 
 
-# if __name__ == '__main__':
-#     root = Tk()
-#     root.title("Some RSS parser")
-#     t = threading.Thread(target=main_thread, args=(root,))
-#     t.start()
-#     root.mainloop()
+if __name__ == '__main__':
+    root = Tk()
+    root.title("Some RSS parser")
+    t = threading.Thread(target=main_thread, args=(root,))
+    t.start()
+    root.mainloop()
 
