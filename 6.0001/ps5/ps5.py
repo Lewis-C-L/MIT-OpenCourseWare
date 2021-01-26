@@ -296,6 +296,31 @@ def filter_stories(stories, triggerlist):
 # User-Specified Triggers
 #======================
 # Problem 11
+def helper_function(inputs):
+    if inputs[1] == 'TITLE':
+        inputs[0] = TitleTrigger(inputs[2])
+    
+    if inputs[1] == 'DESCRIPTION':
+        inputs[0] = DescriptionTrigger(inputs[2])
+    
+    if inputs[1] == 'AFTER':
+        inputs[0] = AfterTrigger(inputs[2])
+    
+    if inputs[1] == 'BEFORE​':
+        inputs[0] = BeforeTrigger(inputs[2])
+   
+    if inputs[1] == 'NOT':
+        inputs[0] = NotTrigger(inputs[2:])
+        
+    if inputs[1] == 'AND':
+        inputs[0] = AndTrigger(inputs[2:])
+        
+    if inputs[1] == 'OR':
+        inputs[0] = OrTrigger(inputs[2:])
+        
+    if inputs[0] == 'ADD':
+        inputs[1:3]
+
 def read_trigger_config(filename):
     """
     filename: the name of a trigger configuration file
@@ -307,16 +332,42 @@ def read_trigger_config(filename):
     # comments. You don't need to know how it works for now!
     trigger_file = open(filename, 'r')
     lines = []
+    Added = []
+    triggers = {}
     for line in trigger_file:
         line = line.rstrip()
         if not (len(line) == 0 or line.startswith('//')):
             lines.append(line)
+            line = line.split(",")
+            
+            if line[1] == "TITLE":
+                triggers[line[0]] = TitleTrigger(line[2])
+            
+            if line[1] == "DESCRIPTION":
+                triggers[line[0]] = DescriptionTrigger(line[2])
+                
+            if line[1] == "AFTER":
+                triggers[line[0]] = AfterTrigger(line[2])
+                
+            if line[1] == "BEFORE":
+                triggers[line[0]] = BeforeTrigger(line[2])
+                
+            if line[1] == "NOT":
+                triggers[line[0]] = NotTrigger(line[2],line[3])
+                
+            if line[1] == "OR":
+                triggers[line[0]] = OrTrigger(line[2],line[3])
+                
+            if line[1] == "AND":
+                triggers[line[0]] = AndTrigger(line[2],line[3])
+            
+            if line[0] == "ADD":
+                Added += line[1:]
+    
 
-    # TODO: Problem 11
-    # line is the list of lines that you need to parse and for which you need
-    # to build triggers
+    return [triggers[x] for x in Added]
 
-    print(lines) # for now, print it so you see what it contains!
+    
 
 
 
